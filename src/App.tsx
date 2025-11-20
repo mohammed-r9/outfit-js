@@ -1,46 +1,31 @@
 import { useMemo, useState } from "react"
 
 import { OutfitCard } from "@/components/outfit-card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
+import { OutfitFilters } from "@/components/outfit-filters"
 import {
     outfits,
     type OutfitGender,
-    type OutfitSeason,
     type OutfitProperty,
-    genderLabels,
-    seasonLabels,
-    propertyLabels,
     getSeasonFromMonth,
     type Season,
 } from "@/lib/outfits"
 
 type AllOption = "all"
+type FilterValue<T> = T | AllOption
 
 function App() {
-    const [genderFilter, setGenderFilter] = useState<OutfitGender | AllOption>(
+    const [genderFilter, setGenderFilter] = useState<FilterValue<OutfitGender>>(
         "all"
     )
-    const [seasonFilter, setSeasonFilter] = useState<Season | AllOption>(
-        "all"
-    )
+    const [seasonFilter, setSeasonFilter] = useState<FilterValue<Season>>("all")
     const [propertyFilter, setPropertyFilter] = useState<
-        OutfitProperty | AllOption
+        FilterValue<OutfitProperty>
     >("all")
     const [searchTerm, setSearchTerm] = useState("")
     const [autoSeason, setAutoSeason] = useState(true)
 
     const currentSeason = getSeasonFromMonth(new Date().getMonth())
-    const activeSeason: Season | AllOption = autoSeason
+    const activeSeason: FilterValue<Season> = autoSeason
         ? currentSeason
         : seasonFilter
 
@@ -72,144 +57,42 @@ function App() {
         setAutoSeason(true)
     }
 
+    const handleAutoSeasonChange = (checked: boolean) => {
+        setAutoSeason(checked)
+    }
+
     return (
         <div
-            className="bg-background text-foreground min-h-screen px-4 py-10"
+            className="bg-background text-foreground min-h-screen px-4 py-6"
             dir="rtl"
         >
-            <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
-                <header className="space-y-4 text-right">
-                    <p className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-                        OUTFIT LAB
-                    </p>
-                    <h1 className="text-3xl font-bold sm:text-4xl">
-                        اكتشف إطلالات مستوحاة من الموسم الحالي
-                    </h1>
-                    <p className="text-muted-foreground text-lg">
-                        استخدم المرشحات لتضييق الخيارات بحسب الجنس والموسم وطابع الإطلالة،
-                        أو فَعِّل التصفية التلقائية ليتم اختيار الموسم بناءً على الشهر
-                        الحالي.
-                    </p>
-                </header>
+            <main className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+                <div className="sticky top-4 z-20">
+                    <OutfitFilters
+                        searchValue={searchTerm}
+                        onSearchChange={setSearchTerm}
+                        genderValue={genderFilter}
+                        onGenderChange={(value) =>
+                            setGenderFilter(value as FilterValue<OutfitGender>)
+                        }
+                        seasonValue={seasonFilter}
+                        onSeasonChange={(value) =>
+                            setSeasonFilter(value as FilterValue<Season>)
+                        }
+                        propertyValue={propertyFilter}
+                        onPropertyChange={(value) =>
+                            setPropertyFilter(value as FilterValue<OutfitProperty>)
+                        }
+                        autoSeason={autoSeason}
+                        onAutoSeasonChange={handleAutoSeasonChange}
+                        currentSeason={currentSeason}
+                        onReset={handleResetFilters}
+                    />
+                </div>
 
-                <section className="rounded-3xl border bg-card/60 p-6 shadow-sm backdrop-blur">
-                    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-                        <div className="flex flex-col gap-2">
-                            <Label htmlFor="search">بحث بالعنوان</Label>
-                            <Input
-                                id="search"
-                                placeholder="اكتب وصف الإطلالة"
-                                value={searchTerm}
-                                className="text-right"
-                                onChange={(event) => setSearchTerm(event.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                            <Label>الجنس</Label>
-                            <Select
-                                value={genderFilter}
-                                onValueChange={(value) =>
-                                    setGenderFilter(value as OutfitGender | AllOption)
-                                }
-                            >
-                                <SelectTrigger className="justify-between text-right">
-                                    <SelectValue placeholder="اختر الجنس" />
-                                </SelectTrigger>
-                                <SelectContent dir="rtl" className="text-right">
-                                    <SelectItem value="all">الكل</SelectItem>
-                                    <SelectItem value="male">{genderLabels.male}</SelectItem>
-                                    <SelectItem value="female">{genderLabels.female}</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                            <Label>الموسم</Label>
-                            <Select
-                                value={seasonFilter}
-                                disabled={autoSeason}
-                                onValueChange={(value) =>
-                                    setSeasonFilter(value as Season | AllOption)
-                                }
-                            >
-                                <SelectTrigger className="justify-between text-right">
-                                    <SelectValue placeholder="اختر الموسم" />
-                                </SelectTrigger>
-                                <SelectContent dir="rtl" className="text-right">
-                                    <SelectItem value="all">كل المواسم</SelectItem>
-                                    {(Object.keys(seasonLabels) as Season[]).map(
-                                        (season) => (
-                                            <SelectItem key={season} value={season}>
-                                                {seasonLabels[season]}
-                                            </SelectItem>
-                                        )
-                                    )}
-                                </SelectContent>
-                            </Select>
-                            <p className="text-muted-foreground text-xs">
-                                {autoSeason
-                                    ? `التصفية التلقائية نشطة (الموسم الحالي: ${seasonLabels[currentSeason]})`
-                                    : "يمكنك اختيار موسم يدويًا أو تركه على الكل"}
-                            </p>
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                            <Label>طابع الإطلالة</Label>
-                            <Select
-                                value={propertyFilter}
-                                onValueChange={(value) =>
-                                    setPropertyFilter(value as OutfitProperty | AllOption)
-                                }
-                            >
-                                <SelectTrigger className="justify-between text-right">
-                                    <SelectValue placeholder="اختر الطابع" />
-                                </SelectTrigger>
-                                <SelectContent dir="rtl" className="text-right">
-                                    <SelectItem value="all">كل الخصائص</SelectItem>
-                                    {(Object.keys(propertyLabels) as OutfitProperty[]).map(
-                                        (property) => (
-                                            <SelectItem key={property} value={property}>
-                                                {propertyLabels[property]}
-                                            </SelectItem>
-                                        )
-                                    )}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-
-                    <div className="mt-6 flex flex-col gap-4 rounded-2xl bg-muted/40 p-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <p className="text-base font-semibold">الموسم الحالي</p>
-                            <p className="text-muted-foreground text-sm">
-                                {seasonLabels[currentSeason]}
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <Label htmlFor="auto-season" className="text-sm">
-                                تفعيل التصفية التلقائية
-                            </Label>
-                            <Switch
-                                id="auto-season"
-                                checked={autoSeason}
-                                onCheckedChange={setAutoSeason}
-                            />
-                        </div>
-                        <Button variant="outline" onClick={handleResetFilters}>
-                            إعادة تعيين المرشحات
-                        </Button>
-                    </div>
-                </section>
-
-                <section className="space-y-4">
+                <section className="space-y-4 pt-4">
                     <div className="flex flex-col gap-2 text-right sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <h2 className="text-2xl font-semibold">الإطلالات المقترحة</h2>
-                            <p className="text-muted-foreground text-sm">
-                                النتائج المتاحة وفقًا للمرشحات الحالية
-                            </p>
-                        </div>
+                        <h2 className="text-2xl font-semibold">الإطلالات المقترحة</h2>
                         <p className="text-sm font-medium text-muted-foreground">
                             {filteredOutfits.length} نتيجة
                         </p>
@@ -223,11 +106,11 @@ function App() {
                         </div>
                     ) : (
                         <div className="text-muted-foreground rounded-3xl border border-dashed p-10 text-center">
-                            لا توجد إطلالات مطابقة حاليًا. جرّب تغيير المرشحات.
+                            لا توجد إطلالات مطابقة. جرّب تعديل البحث أو المرشحات.
                         </div>
                     )}
                 </section>
-            </div>
+            </main>
         </div>
     )
 }
