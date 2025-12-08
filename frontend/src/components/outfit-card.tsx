@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { Edit2, Trash } from "lucide-react"
+import { Edit2, CheckCircle2, Circle } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -20,11 +20,41 @@ import {
 
 type OutfitCardProps = {
     outfit: Outfit
+    onToggleUsed?: (id: string, isUsed: boolean) => Promise<void>
 }
 
-export function OutfitCard({ outfit }: OutfitCardProps) {
+const API_URL = "http://localhost:8080/api"
+
+export function OutfitCard({ outfit, onToggleUsed }: OutfitCardProps) {
     const [imageError, setImageError] = useState(false)
+    const [isTogglingUsed, setIsTogglingUsed] = useState(false)
     const hasImage = Boolean(outfit.imgSrc && !imageError)
+
+    const handleToggleUsed = async () => {
+        if (!outfit.id || isTogglingUsed) return
+        
+        setIsTogglingUsed(true)
+        try {
+            const response = await fetch(`${API_URL}/outfits/${outfit.id}/used`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ is_used: !outfit.is_used })
+            })
+
+            if (!response.ok) throw new Error("فشل في تحديث الحالة")
+            
+            if (onToggleUsed) {
+                await onToggleUsed(outfit.id, !outfit.is_used)
+            }
+        } catch (error) {
+            console.error('Error toggling used status:', error)
+            alert('حدث خطأ أثناء تحديث الحالة')
+        } finally {
+            setIsTogglingUsed(false)
+        }
+    }
 
     return (
         <Card className="flex h-full flex-col overflow-hidden" dir="rtl">
@@ -43,43 +73,26 @@ export function OutfitCard({ outfit }: OutfitCardProps) {
                     </div>
                 )}
                 {outfit.id && (
-                    <div>
+                    <div className="absolute top-2 left-2 flex gap-2">
                         <Link to={`/edit/${outfit.id}`}>
                             <Button
                                 size="sm"
-                                className="absolute top-2 left-2 gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                                 <Edit2 className="h-3 w-3" />
                                 تعديل
                             </Button>
                         </Link>
-                        <Button onClick={async () => {
-                            if (!confirm("هل أنت متأكد من أنك تريد الحذف؟")) return;
-                            try {
-                                const response = await fetch(`http://localhost:8080/api/delete/${outfit.id}`, {
-                                    method: "DELETE",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                    },
-                                });
-
-                                if (!response.ok) {
-                                    throw new Error(`فشل الحذف. الحالة: ${response.status}`);
-                                }
-
-                                const data = await response.json();
-                                console.log("تم الحذف بنجاح:", data);
-                            } catch (error) {
-                                console.error("حدث خطأ أثناء الحذف:", error);
-                            }
-
-                        }}
-                            variant={"destructive"}
-                            className="absolute top-2 right-2 gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Trash /> <span>حذف</span>
-                        </Button>
                     </div>
                 )}
+                <div className="absolute top-2 right-2">
+                    <Badge 
+                        variant={outfit.is_used ? "default" : "secondary"}
+                        className="text-xs"
+                    >
+                        {outfit.is_used ? "مُستخدمة" : "غير مُستخدمة"}
+                    </Badge>
+                </div>
             </div>
             <CardHeader className="space-y-3">
                 <CardTitle className="text-lg">{outfit.title}</CardTitle>
@@ -90,16 +103,39 @@ export function OutfitCard({ outfit }: OutfitCardProps) {
                     </div>
                 </CardDescription>
             </CardHeader>
-            <CardContent className="mt-auto flex flex-wrap gap-2">
-                {outfit.properties.map((property) => (
-                    <Badge
-                        key={property}
-                        variant="secondary"
-                        className="text-sm font-medium"
+            <CardContent className="mt-auto space-y-3">
+                <div className="flex flex-wrap gap-2">
+                    {outfit.properties.map((property) => (
+                        <Badge
+                            key={property}
+                            variant="secondary"
+                            className="text-sm font-medium"
+                        >
+                            {propertyLabels[property]}
+                        </Badge>
+                    ))}
+                </div>
+                {outfit.id && (
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2"
+                        onClick={handleToggleUsed}
+                        disabled={isTogglingUsed}
                     >
-                        {propertyLabels[property]}
-                    </Badge>
-                ))}
+                        {outfit.is_used ? (
+                            <>
+                                <Circle className="h-4 w-4" />
+                                تحديد كغير مستخدمة
+                            </>
+                        ) : (
+                            <>
+                                <CheckCircle2 className="h-4 w-4" />
+                                تحديد كمستخدمة
+                            </>
+                        )}
+                    </Button>
+                )}
             </CardContent>
         </Card>
     )

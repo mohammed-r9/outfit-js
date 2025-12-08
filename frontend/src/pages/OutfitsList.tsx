@@ -41,7 +41,7 @@ function OutfitsList() {
     const [outfits, setOutfits] = useState<Outfit[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    
+
     const [genderFilter, setGenderFilter] = useState<FilterValue<OutfitGender>>(
         "all"
     )
@@ -66,9 +66,9 @@ function OutfitsList() {
             setLoading(true)
             const response = await fetch(`${API_URL}/outfits`)
             if (!response.ok) throw new Error("فشل في جلب الإطلالات")
-            
+
             const data: BackendOutfit[] = await response.json()
-            
+
             const transformedOutfits: Outfit[] = data.map(outfit => ({
                 id: outfit.id,
                 title: outfit.name,
@@ -78,7 +78,7 @@ function OutfitsList() {
                 imgSrc: outfit.image_path ? `${API_URL.replace('/api', '')}${outfit.image_path}` : undefined,
                 is_used: outfit.is_used === 1
             }))
-            
+
             setOutfits(transformedOutfits)
             setError(null)
         } catch (err) {
@@ -120,6 +120,15 @@ function OutfitsList() {
         setAutoSeason(checked)
     }
 
+    const handleToggleUsed = async (id: string, isUsed: boolean) => {
+        // Update the local state immediately for better UX
+        setOutfits(prevOutfits =>
+            prevOutfits.map(outfit =>
+                outfit.id === id ? { ...outfit, is_used: isUsed } : outfit
+            )
+        )
+    }
+
     if (loading) {
         return (
             <div className="bg-background text-foreground min-h-screen px-4 py-6" dir="rtl">
@@ -136,6 +145,7 @@ function OutfitsList() {
                 <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-center gap-4 py-20">
                     <p className="text-xl text-red-500">{error}</p>
                     <Button onClick={fetchOutfits}>إعادة المحاولة</Button>
+
                 </div>
             </div>
         )
@@ -189,7 +199,11 @@ function OutfitsList() {
                     {filteredOutfits.length ? (
                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             {filteredOutfits.map((outfit) => (
-                                <OutfitCard key={outfit.id} outfit={outfit} />
+                                <OutfitCard 
+                                    key={outfit.id} 
+                                    outfit={outfit}
+                                    onToggleUsed={handleToggleUsed}
+                                />
                             ))}
                         </div>
                     ) : (

@@ -3,11 +3,17 @@ import cors from "cors";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
+import db from "./db/index.js"; // Initialize DB
+import { registerGetRoutes } from "./handlers/get.js";
+import { registerPostRoutes } from "./handlers/post.js";
+import { registerPutRoutes } from "./handlers/put.js";
+import { registerPatchRoutes } from "./handlers/patch.js";
+import { registerDeleteRoutes } from "./handlers/delete.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const app = express();
+const app = express();
 
 app.use(cors({
     origin: "*",
@@ -50,6 +56,13 @@ const upload = multer({
 app.get("/health", (req, res) => {
     res.json({ status: "ok" });
 });
+
+// Register routes
+registerGetRoutes(app);
+registerPostRoutes(app, upload);
+registerPutRoutes(app, upload);
+registerPatchRoutes(app);
+registerDeleteRoutes(app);
 
 const PORT = 8080;
 

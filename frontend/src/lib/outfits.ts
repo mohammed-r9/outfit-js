@@ -24,6 +24,7 @@ export interface Outfit {
     season: OutfitSeason
     properties: OutfitProperty[]
     imgSrc?: string
+    is_used?: boolean
 }
 
 export const genderLabels: Record<OutfitGender, string> = {
