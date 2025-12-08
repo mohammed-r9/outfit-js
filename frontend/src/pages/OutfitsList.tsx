@@ -50,7 +50,7 @@ function OutfitsList() {
         FilterValue<OutfitProperty>
     >("all")
     const [searchTerm, setSearchTerm] = useState("")
-    const [autoSeason, setAutoSeason] = useState(true)
+    const [autoSeason, setAutoSeason] = useState(false)
 
     const currentSeason = getSeasonFromMonth(new Date().getMonth())
     const activeSeason: FilterValue<Season> = autoSeason
@@ -113,7 +113,7 @@ function OutfitsList() {
         setSeasonFilter("all")
         setPropertyFilter("all")
         setSearchTerm("")
-        setAutoSeason(true)
+        setAutoSeason(false)
     }
 
     const handleAutoSeasonChange = (checked: boolean) => {
@@ -199,8 +199,8 @@ function OutfitsList() {
                     {filteredOutfits.length ? (
                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             {filteredOutfits.map((outfit) => (
-                                <OutfitCard 
-                                    key={outfit.id} 
+                                <OutfitCard
+                                    key={outfit.id}
                                     outfit={outfit}
                                     onToggleUsed={handleToggleUsed}
                                 />
