@@ -18,6 +18,7 @@ export type OutfitProperty =
     | "colorful"
 
 export interface Outfit {
+    id?: string
     title: string
     gender: OutfitGender
     season: OutfitSeason
