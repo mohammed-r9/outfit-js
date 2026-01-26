@@ -4,9 +4,9 @@ export function registerPostRoutes(app, upload) {
     // Create new outfit
     app.post("/api/outfits", upload.single('image'), (req, res) => {
         try {
-            const { name, seasons, gender, properties } = req.body;
+            const { name, seasons, gender, properties, size } = req.body;
 
-            if (!name || !seasons || !gender || !properties) {
+            if (!name || !seasons || !gender || !properties || !size) {
                 return res.status(400).json({ error: "جميع الحقول مطلوبة" });
             }
 
@@ -17,6 +17,7 @@ export function registerPostRoutes(app, upload) {
                 seasons,
                 gender,
                 properties,
+                size,
                 image_path,
                 is_used: false
             });

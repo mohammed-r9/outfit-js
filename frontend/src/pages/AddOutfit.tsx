@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { genderLabels, seasonLabels, propertyLabels, type OutfitGender, type Season, type OutfitProperty } from "@/lib/outfits"
+import { genderLabels, seasonLabels, propertyLabels, sizes, type OutfitGender, type Season, type OutfitProperty, type OutfitSize } from "@/lib/outfits"
 
 const API_URL = "http://localhost:8080/api"
 
@@ -19,6 +19,7 @@ function AddOutfit() {
     const [gender, setGender] = useState<OutfitGender>("male")
     const [seasons, setSeasons] = useState<Season[]>([])
     const [properties, setProperties] = useState<OutfitProperty[]>([])
+    const [size, setSize] = useState<OutfitSize>("md")
     const [image, setImage] = useState<File | null>(null)
     const [imagePreview, setImagePreview] = useState<string | null>(null)
 
@@ -77,6 +78,7 @@ function AddOutfit() {
             formData.append('gender', gender)
             formData.append('seasons', seasons.join(','))
             formData.append('properties', properties.join(','))
+            formData.append('size', size)
             
             if (image) {
                 formData.append('image', image)
@@ -149,6 +151,25 @@ function AddOutfit() {
                                                 className="h-4 w-4"
                                             />
                                             <span>{genderLabels[g]}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label>المقاس *</Label>
+                                <div className="flex gap-4">
+                                    {sizes.map((s) => (
+                                        <label key={s} className="flex items-center gap-2 cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                name="size"
+                                                value={s}
+                                                checked={size === s}
+                                                onChange={(e) => setSize(e.target.value as OutfitSize)}
+                                                className="h-4 w-4"
+                                            />
+                                            <span className="uppercase">{s}</span>
                                         </label>
                                     ))}
                                 </div>

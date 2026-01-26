@@ -1,3 +1,4 @@
+export type OutfitSize = "sm" | "md" | "lg" | "xl";
 export type Season = "spring" | "summer" | "autumn" | "winter"
 export type OutfitSeason = Season[]
 export type OutfitGender = "male" | "female"
@@ -23,9 +24,12 @@ export interface Outfit {
     gender: OutfitGender
     season: OutfitSeason
     properties: OutfitProperty[]
+    size: OutfitSize
     imgSrc?: string
     is_used?: boolean
 }
+
+export const sizes: OutfitSize[] = ["sm", "md", "lg", "xl"];
 
 export const genderLabels: Record<OutfitGender, string> = {
     male: "رجالي",
@@ -62,6 +66,7 @@ export const outfits: Outfit[] = [
         gender: "female",
         season: ["spring", "autumn"],
         properties: ["breathable", "casual", "colorful"],
+        size: "sm",
         imgSrc: new URL('@/assets/images/1.avif', import.meta.url).href,
     },
     {
@@ -69,6 +74,7 @@ export const outfits: Outfit[] = [
         gender: "female",
         season: ["autumn", "autumn"],
         properties: ["layers", "street", "neutral"],
+        size: "md",
         imgSrc: new URL('@/assets/images/2.avif', import.meta.url).href,
     },
     {
@@ -76,6 +82,7 @@ export const outfits: Outfit[] = [
         gender: "male",
         season: ["summer"],
         properties: ["formal", "work", "minimal"],
+        size: "lg",
         imgSrc: new URL('@/assets/images/3.avif', import.meta.url).href,
     },
     {
@@ -83,6 +90,7 @@ export const outfits: Outfit[] = [
         gender: "male",
         season: ["spring", "autumn"],
         properties: ["weekend", "casual", "travel"],
+        size: "xl",
         imgSrc: new URL('@/assets/images/4.avif', import.meta.url).href,
     },
     {
@@ -90,6 +98,7 @@ export const outfits: Outfit[] = [
         gender: "female",
         season: ["winter"],
         properties: ["warmth", "evening"],
+        size: "sm",
         imgSrc: new URL('@/assets/images/5.avif', import.meta.url).href,
     },
     {
@@ -97,6 +106,7 @@ export const outfits: Outfit[] = [
         gender: "female",
         season: ["autumn", "spring"],
         properties: ["formal", "work", "layers"],
+        size: "md",
         imgSrc: new URL('@/assets/images/6.avif', import.meta.url).href,
     },
     {
@@ -104,6 +114,7 @@ export const outfits: Outfit[] = [
         gender: "female",
         season: ["summer"],
         properties: ["sport", "breathable", "weekend"],
+        size: "lg",
         imgSrc: new URL('@/assets/images/7.avif', import.meta.url).href,
     },
     {
@@ -111,6 +122,7 @@ export const outfits: Outfit[] = [
         gender: "male",
         season: ['winter'],
         properties: ["travel", "layers", "warmth"],
+        size: "xl",
         // no image
     },
 ]

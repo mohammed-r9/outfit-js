@@ -5,7 +5,7 @@ export function registerPutRoutes(app, upload) {
     app.put("/api/outfits/:id", upload.single('image'), (req, res) => {
         try {
             const { id } = req.params;
-            const { name, seasons, gender, properties } = req.body;
+            const { name, seasons, gender, properties, size } = req.body;
 
             const existingOutfit = queries.getOutfitById(id);
             if (!existingOutfit) {
@@ -19,6 +19,7 @@ export function registerPutRoutes(app, upload) {
                 seasons: seasons || existingOutfit.seasons,
                 gender: gender || existingOutfit.gender,
                 properties: properties || existingOutfit.properties,
+                size: size || existingOutfit.size,
                 image_path
             });
 

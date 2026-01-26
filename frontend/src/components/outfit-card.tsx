@@ -32,7 +32,7 @@ export function OutfitCard({ outfit, onToggleUsed }: OutfitCardProps) {
 
     const handleToggleUsed = async () => {
         if (!outfit.id || isTogglingUsed) return
-        
+
         setIsTogglingUsed(true)
         try {
             const response = await fetch(`${API_URL}/outfits/${outfit.id}/used`, {
@@ -44,7 +44,7 @@ export function OutfitCard({ outfit, onToggleUsed }: OutfitCardProps) {
             })
 
             if (!response.ok) throw new Error("فشل في تحديث الحالة")
-            
+
             if (onToggleUsed) {
                 await onToggleUsed(outfit.id, !outfit.is_used)
             }
@@ -86,7 +86,7 @@ export function OutfitCard({ outfit, onToggleUsed }: OutfitCardProps) {
                     </div>
                 )}
                 <div className="absolute top-2 right-2">
-                    <Badge 
+                    <Badge
                         variant={outfit.is_used ? "default" : "secondary"}
                         className="text-xs"
                     >
@@ -97,7 +97,10 @@ export function OutfitCard({ outfit, onToggleUsed }: OutfitCardProps) {
             <CardHeader className="space-y-3">
                 <CardTitle className="text-lg">{outfit.title}</CardTitle>
                 <CardDescription className="text-base font-medium text-foreground grid gap-2">
-                    <span>{genderLabels[outfit.gender]}</span>
+                    <div className="flex gap-4">
+                        <span>{genderLabels[outfit.gender]}</span>
+                        <Badge className="uppercase bg-green-600">{outfit.size ?? "No size"}</Badge>
+                    </div>
                     <div className="flex gap-2">
                         {outfit.season.map(item => <Badge variant={"default"} key={outfit.title + item}>{seasonLabels[item]}</Badge>)}
                     </div>

@@ -10,6 +10,7 @@ import {
     type OutfitProperty,
     getSeasonFromMonth,
     type Season,
+    type OutfitSize,
 } from "@/lib/outfits"
 
 type AllOption = "all"
@@ -20,6 +21,7 @@ interface BackendOutfit {
     name: string
     seasons: string
     gender: string
+    size: string,
     properties: string
     image_path: string | null
     is_used: number
@@ -72,6 +74,7 @@ function OutfitsList() {
             const transformedOutfits: Outfit[] = data.map(outfit => ({
                 id: outfit.id,
                 title: outfit.name,
+                size: outfit.size as OutfitSize,
                 gender: outfit.gender as OutfitGender,
                 season: outfit.seasons.split(',') as Season[],
                 properties: outfit.properties.split(',') as OutfitProperty[],

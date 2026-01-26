@@ -1,23 +1,23 @@
 import db from "./index.js";
 import { ulid } from "ulid";
 
-function addOutfit({ name, seasons, gender, properties, image_path, is_used = false }) {
+function addOutfit({ name, seasons, gender, properties, image_path, size, is_used = false }) {
     const id = ulid();
     const stmt = db.prepare(`
-    INSERT INTO outfits (id, name, seasons, gender, properties, image_path, is_used)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO outfits (id, name, seasons, gender, properties, image_path, is_used, size)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `);
-    stmt.run(id, name, seasons, gender, properties, image_path, is_used ? 1 : 0);
+    stmt.run(id, name, seasons, gender, properties, image_path, is_used ? 1 : 0, size);
     return id;
 }
 
-function updateOutfit(id, { name, seasons, gender, properties, image_path }) {
+function updateOutfit(id, { name, seasons, gender, properties, image_path, size }) {
     const stmt = db.prepare(`
     UPDATE outfits
-    SET name = ?, seasons = ?, gender = ?, properties = ?, image_path = ?
+    SET name = ?, seasons = ?, gender = ?, properties = ?, image_path = ?, size = ?
     WHERE id = ?
   `);
-    stmt.run(name, seasons, gender, properties, image_path, id);
+    stmt.run(name, seasons, gender, properties, image_path, size, id);
 }
 
 function getOutfitById(id) {
