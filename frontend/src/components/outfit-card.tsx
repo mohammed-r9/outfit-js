@@ -130,7 +130,8 @@ export function OutfitCard({ outfit, onToggleUsed }: OutfitCardProps) {
 
 						<Button variant={"outline"} onClick={() => updateQuantity(quantity + 1, setQuntity, outfit?.id)}><Plus /> </Button>
 						<p className="mt-2">الكمية المتبقية: {quantity}</p>
-						<Button variant={"outline"} onClick={() => updateQuantity(quantity - 1, setQuntity, outfit?.id)}><Minus /> </Button>
+						<Button disabled={quantity < 1}
+							variant={"outline"} onClick={() => updateQuantity(quantity - 1, setQuntity, outfit?.id)}><Minus /> </Button>
 					</div>
 				</CardDescription>
 			</CardHeader>
