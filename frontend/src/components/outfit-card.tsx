@@ -17,6 +17,7 @@ import {
 	seasonLabels,
 	genderLabels,
 } from "@/lib/outfits"
+import { cn } from "@/lib/utils"
 
 type OutfitCardProps = {
 	outfit: Outfit
@@ -131,6 +132,8 @@ export function OutfitCard({ outfit, onToggleUsed }: OutfitCardProps) {
 						<Button variant={"outline"} onClick={() => updateQuantity(quantity + 1, setQuntity, outfit?.id)}><Plus /> </Button>
 						<p className="mt-2">الكمية المتبقية: {quantity}</p>
 						<Button disabled={quantity < 1}
+							className="disabled:pointer-events-auto disabled:cursor-not-allowed!"
+
 							variant={"outline"} onClick={() => updateQuantity(quantity - 1, setQuntity, outfit?.id)}><Minus /> </Button>
 					</div>
 				</CardDescription>
