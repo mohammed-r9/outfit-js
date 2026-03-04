@@ -27,6 +27,7 @@ interface BackendOutfit {
 	properties: string
 	image_path: string | null
 	is_used: number
+	quantity: number
 }
 
 interface Outfit {
@@ -38,6 +39,7 @@ interface Outfit {
 	imgSrc?: string
 	size: OutfitSize
 	is_used: boolean
+	quantity: number
 }
 
 const API_URL = "http://localhost:8080/api"
@@ -85,6 +87,7 @@ function OutfitsList() {
 				season: outfit.seasons.split(',') as Season[],
 				properties: outfit.properties.split(',') as OutfitProperty[],
 				imgSrc: outfit.image_path ? `${API_URL.replace('/api', '')}${outfit.image_path}` : undefined,
+				quantity: outfit.quantity as number,
 				is_used: outfit.is_used === 1
 			}))
 

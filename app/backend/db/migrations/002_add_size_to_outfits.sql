@@ -1,0 +1,1 @@
+ALTER TABLE outfits ADD COLUMN size TEXT;

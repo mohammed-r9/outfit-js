@@ -33,6 +33,7 @@ export default function Login({ }: Props) {
 		e.preventDefault()
 		if (form.username !== credentials.username || form.password !== credentials.password) {
 			setError("بيانات الدخول غير صحيحة")
+			return
 		}
 		sessionStorage.setItem("auth", "true")
 		setIsAuthed(true)

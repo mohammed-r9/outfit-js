@@ -22,6 +22,7 @@ function AddOutfit() {
 	const [seasons, setSeasons] = useState<Season[]>([])
 	const [properties, setProperties] = useState<OutfitProperty[]>([])
 	const [size, setSize] = useState<OutfitSize>("md")
+	const [quantity, setQuantity] = useState(0)
 	const [image, setImage] = useState<File | null>(null)
 	const [imagePreview, setImagePreview] = useState<string | null>(null)
 
@@ -82,6 +83,7 @@ function AddOutfit() {
 			formData.append('gender', gender)
 			formData.append('seasons', seasons.join(','))
 			formData.append('properties', properties.join(','))
+			formData.append('quantity', quantity.toString())
 			formData.append('size', size)
 
 			if (image) {
@@ -141,6 +143,19 @@ function AddOutfit() {
 								/>
 							</div>
 
+							<div className="space-y-2">
+								<Label htmlFor="quantity">الكمية *</Label>
+								<Input
+									id="quantity"
+									type="number"
+									min={0}
+									value={quantity}
+									onChange={(e) => {
+										setQuantity(Number(e.target.value) || 0)
+									}}
+									required
+								/>
+							</div>
 							<div className="space-y-2">
 								<Label>النوع *</Label>
 								<div className="flex gap-4">

@@ -1,25 +1,40 @@
 import { queries } from "../db/queries.js"
 
 export function registerPatchRoutes(app) {
-    // Toggle outfit used status
-    app.patch("/api/outfits/:id/used", (req, res) => {
-        try {
-            const { id } = req.params;
-            const { is_used } = req.body;
+	// Toggle outfit used status
+	app.patch("/api/outfits/:id/used", (req, res) => {
+		try {
+			const { id } = req.params;
+			const { is_used } = req.body;
 
-            const existingOutfit = queries.getOutfitById(id);
-            if (!existingOutfit) {
-                return res.status(404).json({ error: "الإطلالة غير موجودة" });
-            }
+			const existingOutfit = queries.getOutfitById(id);
+			if (!existingOutfit) {
+				return res.status(404).json({ error: "الإطلالة غير موجودة" });
+			}
 
-            queries.setOutfitUsed(id, is_used);
-            res.json({
-                message: "تم تحديث حالة الإطلالة بنجاح",
-                outfit: queries.getOutfitById(id)
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: "خطأ في تحديث حالة الإطلالة" });
-        }
-    });
+			queries.setOutfitUsed(id, is_used);
+			res.json({
+				message: "تم تحديث حالة الإطلالة بنجاح",
+				outfit: queries.getOutfitById(id)
+			});
+		} catch (error) {
+			console.error(error);
+			res.status(500).json({ error: "خطأ في تحديث حالة الإطلالة" });
+		}
+	});
+
+	app.patch("/api/outfits/:id/quantity", (req, res) => {
+		try {
+			const { id } = req.params;
+			const { quantity } = req.body;
+			queries.updateQuantity(id, quantity)
+			res.json({
+				message: "تم تحديث حالة الإطلالة بنجاح",
+				outfit: queries.getOutfitById(id)
+			});
+		} catch (error) {
+			console.error(error);
+			res.status(500).json({ error: "خطأ في تحديث حالة الإطلالة" });
+		}
+	})
 }
