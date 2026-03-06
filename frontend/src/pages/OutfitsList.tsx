@@ -65,7 +65,7 @@ function OutfitsList() {
 		: seasonFilter
 
 	const navigate = useNavigate()
-	const [isAuthed, setIsAuthed] = useAtom(isAuth)
+	const [isAuthed] = useAtom(isAuth)
 	if (!isAuthed) navigate("/login")
 	useEffect(() => {
 		fetchOutfits()
