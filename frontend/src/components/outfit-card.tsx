@@ -17,7 +17,6 @@ import {
 	seasonLabels,
 	genderLabels,
 } from "@/lib/outfits"
-import { cn } from "@/lib/utils"
 
 type OutfitCardProps = {
 	outfit: Outfit
@@ -26,7 +25,7 @@ type OutfitCardProps = {
 
 const API_URL = "http://localhost:8080/api"
 
-async function updateQuantity(newQuantity, stateSetter, id) {
+async function updateQuantity(newQuantity: any, stateSetter: any, id: any) {
 	try {
 		const response = await fetch(`${API_URL}/outfits/${id}/quantity`, {
 			method: "PATCH",
