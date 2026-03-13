@@ -79,7 +79,9 @@ export default function Login({ }: Props) {
 								onChange={handleChange}
 								required
 							/>
-							<Button type="button" variant={"ghost"} className="absolute left-0 hover:bg-background/0" onClick={() => setIsPasswordShown(prev => !prev)}>
+							<Button type="button" variant={"ghost"}
+								className="absolute left-0 hover:bg-background/0"
+								onClick={() => setIsPasswordShown(prev => !prev)}>
 								{
 									isPasswordShown ? <Eye /> : <EyeOff />
 								}
